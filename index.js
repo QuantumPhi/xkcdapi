@@ -13,7 +13,7 @@ var port = process.env.PORT || 8080
 var router = express.Router()
 
 router.get('/', function(req, res) {
-    res.json({ "message": "Not much to see here." })
+    res.json({ "message": "No velociraptors." })
 })
 
 var whatif = "http://whatif.xkcd.com/",
