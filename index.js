@@ -12,15 +12,6 @@ var port = process.env.PORT || 8080
 
 var router = express.Router()
 
-var text = function(element) {
-    return element
-        .clone()
-        .children()
-        .remove()
-        .end()
-        .text()
-}
-
 router.get('/', function(req, res) {
     res.json({ "message": "No velociraptors." })
 })
@@ -38,7 +29,7 @@ router.get('/xkcd', function(req, res) {
 })
 
 router.get('/xkcd/:id', function(req, res) {
-    request(xkcd + req.params.id + '/info.0.json', function(err, resp, body) {
+    request(xkcd + '/' + req.params.id + '/info.0.json', function(err, resp, body) {
         if(err) {
             res.json(resp.statusCode, { "message": err.message })
             return
@@ -60,29 +51,32 @@ router.get('/whatif', function(req, res) {
 })
 
 router.get('/whatif/:id', function(req, res) {
-    request(whatif + req.params.id, function(err, resp, body) {
+    request(whatif + '/' + req.params.id, function(err, resp, body) {
         if(err) {
             res.json(resp.statusCode, { "message": err.message })
             return
         }
         $ = cheerio.load(body)
-        var entry = text($('article#entry')),
-            title = text(entry.children('a').first().children()),
-            question = text(entry.children('p#question')),
-            attribute = text(entry.children('p#attribute')),
-            content = entry.children('p'),
-            images = entry.children('img.illustration'),
+        var entry = $('article#entry'),
+            title = $('article#entry > a > h1').text()
+            question = $('p#question').text(),
+            attribute = $('p#attribute').text(),
+            content = $('article#entry > p'),
+            images = $('img.illustration'),
             layout = [],
             contemp = [],
             imgtemp = []
+        console.log(content.length)
+        console.log(images.length)
         content.each(function(index, element) {
-            if(element !== question && element !== attr)
-                contemp.push(text(element))
+            if(element !== question && element !== attrribute)
+                contemp.push(element.text())
         })
+        content = contemp
         images.each(function(index, element) {
-            imgtemp.push(element.attr('src'))
+            imgtemp.push($(element).attr('src'))
         })
-        images = temp
+        images = imgtemp
 
         entry.children().each(function(index, element) {
             if(element.prop('tagName') === 'p')
@@ -97,14 +91,15 @@ router.get('/whatif/:id', function(req, res) {
         json["attribute"] = attribute
         json["content"] = content.join('\n')
         json["images"] = images.join(', ')
+        console.log(json)
 
         res.json(json)
     })
 })
 
-var xkcd = 'http://xkcd.com/'
-    whatif = 'http://whatif.xkcd.com/',
-    blog = 'http://blog.xkcd.com/'
+var xkcd = 'http://xkcd.com'
+    whatif = 'http://whatif.xkcd.com',
+    blog = 'http://blog.xkcd.com'
 
 app.use('/api', router)
 
