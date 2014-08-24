@@ -57,41 +57,48 @@ router.get('/whatif/:id', function(req, res) {
             return
         }
         $ = cheerio.load(body)
-        var entry = $('article#entry'),
-            title = $('article#entry > a > h1').text()
-            question = $('p#question').text(),
-            attribute = $('p#attribute').text(),
-            content = $('article#entry > p'),
+        var entry = $('article.entry'),
+            title = $('article.entry > a > h1').text()
+            question = $('p#question'),
+            attribute = $('p#attribute'),
+            content = $('article.entry > p'),
             images = $('img.illustration'),
             layout = [],
             contemp = [],
             imgtemp = []
-        console.log(content.length)
-        console.log(images.length)
+
         content.each(function(index, element) {
-            if(element !== question && element !== attrribute)
-                contemp.push(element.text())
+            element = $(element)
+            if(element !== question && element !== attribute)
+                contemp.push(element.text().replace(/\n/, ' '))
         })
         content = contemp
+
         images.each(function(index, element) {
             imgtemp.push($(element).attr('src'))
         })
         images = imgtemp
 
         entry.children().each(function(index, element) {
-            if(element.prop('tagName') === 'p')
+            element = $(element)
+            if(element.is('p'))
                 layout.push('p')
-            else(element.prop('tagName') === 'img')
+            else if(element.is('img'))
                 layout.push('img')
         })
 
-        json = {}
+        question = question.text()
+        attribute = attribute.text()
+
+        var json = {}
         json["title"] = title
         json["question"] = question
         json["attribute"] = attribute
-        json["content"] = content.join('\n')
+        json["content"] = content.join('_')
         json["images"] = images.join(', ')
-        console.log(json)
+        json["layout"] = layout.join(', ')
+
+        json = JSON.parse(JSON.stringify(json).replace(/\\n/g, ' '))
 
         res.json(json)
     })
