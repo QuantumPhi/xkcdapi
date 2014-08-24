@@ -17,9 +17,9 @@ router.get('/', function(req, res) {
 })
 
 router.get('/xkcd', function(req, res) {
-    request(xkcd + 'info.0.json', function(err, resp, body) {
+    request(xkcd + '/info.0.json', function(err, resp, body) {
         if(err) {
-            res.json(resp.statusCode, { "message": err.message })
+            res.json({ "message": err.message })
             return
         }
         var info = JSON.parse(body)
@@ -31,7 +31,7 @@ router.get('/xkcd', function(req, res) {
 router.get('/xkcd/:id', function(req, res) {
     request(xkcd + '/' + req.params.id + '/info.0.json', function(err, resp, body) {
         if(err) {
-            res.json(resp.statusCode, { "message": err.message })
+            res.json({ "message": err.message })
             return
         }
         res.json(body)
