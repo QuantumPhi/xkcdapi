@@ -75,7 +75,7 @@ router.get('/whatif/:id', function(req, res) {
         content = contemp
 
         images.each(function(index, element) {
-            imgtemp.push($(element).attr('src'))
+            imgtemp.push(whatif + $(element).attr('src'))
         })
         images = imgtemp
 
