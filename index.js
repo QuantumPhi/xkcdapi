@@ -34,7 +34,7 @@ router.get('/xkcd/:id', function(req, res) {
             res.json({ "message": err.message })
             return
         }
-        res.json(body)
+        res.json(JSON.parse(body.replace(/\\n/g, ' ')))
     })
 })
 
