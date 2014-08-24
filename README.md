@@ -1,5 +1,3 @@
 xkcdapi
 =======
-A simple API for fetching _xkcd_ comics.
-
-[License](LICENSE)
+A simple API for fetching [xkcd](http://xkcd.com/) comics.
