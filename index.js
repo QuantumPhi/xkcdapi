@@ -96,7 +96,7 @@ router.get('/whatif/:id', function(req, res) {
                 "question": question,
                 "attribute": attribute,
                 "content": content.join('_'),
-                "images": images.join('_'),
+                "img": images.join('_'),
                 "layout": layout.join('_')
             }
         ).replace(/\\n/g, ' ')))
@@ -112,8 +112,18 @@ router.get('/blog', function(req, res) {
         $ = cheerio.load(body)
         var article = String($('article.post').attr('id'))
         article = article.substring(article.indexOf('post-') + 'post-'.length)
-        console.log(article)
         res.json({ "maxnum": parseInt(article)})
+    })
+})
+
+router.get('/blog/:id/:paginate', function(req, res){
+    request(blog + '/' + req.params.id, function(err, resp, body) {
+        if(err) {
+            res.json(resp.statusCode, { "message": err.message() })
+            return
+        }
+        $ = cheerio.load(body)
+        var article = $('article.post')
     })
 })
 
