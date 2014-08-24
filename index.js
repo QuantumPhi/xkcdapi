@@ -23,7 +23,7 @@ router.get('/xkcd', function(req, res) {
             return
         }
         var info = JSON.parse(body)
-        var json = { "num": info["num"] }
+        var json = { "maxnum": info["num"] }
         res.json(json)
     })
 })
@@ -46,7 +46,7 @@ router.get('/whatif', function(req, res) {
         }
         $ = cheerio.load(body)
         var num = parseInt($('article.entry > a').attr('href').split('/')[3])
-        res.json({ "num": num })
+        res.json({ "maxnum": num })
     })
 })
 
@@ -90,17 +90,30 @@ router.get('/whatif/:id', function(req, res) {
         question = question.text()
         attribute = attribute.text()
 
-        var json = {}
-        json["title"] = title
-        json["question"] = question
-        json["attribute"] = attribute
-        json["content"] = content.join('_')
-        json["images"] = images.join(', ')
-        json["layout"] = layout.join(', ')
+        res.json(JSON.parse(JSON.stringify(
+            {
+                "title": title,
+                "question": question,
+                "attribute": attribute,
+                "content": content.join('_'),
+                "images": images.join('_'),
+                "layout": layout.join('_')
+            }
+        ).replace(/\\n/g, ' ')))
+    })
+})
 
-        json = JSON.parse(JSON.stringify(json).replace(/\\n/g, ' '))
-
-        res.json(json)
+router.get('/blog', function(req, res) {
+    request(blog, function(err, resp, body) {
+        if(err) {
+            res.json(resp.statusCode, { "message": err.message() })
+            return
+        }
+        $ = cheerio.load(body)
+        var article = String($('article.post').attr('id'))
+        article = article.substring(article.indexOf('post-') + 'post-'.length)
+        console.log(article)
+        res.json({ "maxnum": parseInt(article)})
     })
 })
 
