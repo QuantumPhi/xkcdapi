@@ -50,18 +50,6 @@ router.get('/xkcd/:id', function(req, res) {
 })
 
 router.route('/whatif')
-    .post(function(req, res) {
-        request(whatif, function(err, resp, body) {
-            if(err) {
-                res.json(resp.statusCode, { "message": err.message })
-                return
-            }
-            $ = cheerio.load(body)
-            var num = parseInt($('article.entry > a').attr('href').split('/')[3])
-            res.json({ "num": num })
-        })
-    })
-
     .get(function(req, res) {
         request(whatif, function(err, resp, body) {
             if(err) {
@@ -105,6 +93,7 @@ router.route('/whatif')
 
             res.json(JSON.parse(JSON.stringify(
                 {
+                    "num": parseInt($('article.entry > a').attr('href').split('/')[3]),
                     "title": title,
                     "question": question,
                     "attribute": attribute,
@@ -113,6 +102,18 @@ router.route('/whatif')
                     "layout": layout.join('|')
                 }
             ).replace(/\\n/g, ' ')))
+        })
+    })
+
+    .post(function(req, res) {
+        request(whatif, function(err, resp, body) {
+            if(err) {
+                res.json(resp.statusCode, { "message": err.message })
+                return
+            }
+            $ = cheerio.load(body)
+            var num = parseInt($('article.entry > a').attr('href').split('/')[3])
+            res.json({ "num": num })
         })
     })
 
