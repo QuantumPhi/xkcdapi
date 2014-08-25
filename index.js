@@ -23,7 +23,7 @@ router.get('/xkcd', function(req, res) {
             return
         }
         var info = JSON.parse(body)
-        var json = { "maxnum": info["num"] }
+        var json = { "num": info["num"] }
         res.json(json)
     })
 })
@@ -46,7 +46,7 @@ router.get('/whatif', function(req, res) {
         }
         $ = cheerio.load(body)
         var num = parseInt($('article.entry > a').attr('href').split('/')[3])
-        res.json({ "maxnum": num })
+        res.json({ "num": num })
     })
 })
 
@@ -69,8 +69,9 @@ router.get('/whatif/:id', function(req, res) {
 
         content.each(function(index, element) {
             element = $(element)
-            if(element !== question && element !== attribute)
-                contemp.push(element.text().replace(/\n/, ' '))
+            if(element.attr('id') !== "question" &&
+                    element.attr('id') !=="attribute")
+                contemp.push(element.text())
         })
         content = contemp
 
@@ -112,7 +113,7 @@ router.get('/blog', function(req, res) {
         $ = cheerio.load(body)
         var article = String($('article.post').attr('id'))
         article = article.substring(article.indexOf('post-') + 'post-'.length)
-        res.json({ "maxnum": parseInt(article)})
+        res.json({ "num": parseInt(article)})
     })
 })
 
