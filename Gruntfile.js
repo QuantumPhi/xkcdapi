@@ -44,12 +44,12 @@ module.exports = function(grunt) {
             },
 
             css: {
-                files: ['stylesheets/sass/**/.scss'],
+                files: ['stylesheets/sass/**/*.{scss,sass}'],
                 tasks: ['buildcss']
             }
         }
     })
 
-    grunt.registerTask('default', [])
+    grunt.registerTask('default', ['uglify', 'buildcss'])
     grunt.registerTask('buildcss', ['sass', 'cssc', 'cssmin'])
 }

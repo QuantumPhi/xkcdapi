@@ -5,11 +5,11 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     request = require('request'),
     cheerio = require('cheerio')
-    
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.set('view engine', 'jade')
-app.set('views', 'views')
+app.set('views', 'jade')
 
 router.get('/', function(req, res) {
     res.render('index')

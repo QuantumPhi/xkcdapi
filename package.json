@@ -26,5 +26,8 @@
     "grunt-cssc": "^0.2.6",
     "grunt-sass": "^0.14.0",
     "matchdep": "^0.3.0"
+  },
+  "scripts": {
+      "postinstall": "grunt"
   }
 }
