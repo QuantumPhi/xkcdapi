@@ -1,12 +1,18 @@
 var express = require('express'),
+    app = express(),
     bodyParser = require('body-parser'),
     request = require('request'),
-    cheerio = require('cheerio')
-
-var app = express()
+    cheerio = require('cheerio'),
+    sass = require('node-sass')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.set('view engine', 'jade')
+app.set('views', 'views')
+app.use(sass.middleware({
+    src: "style",
+    dest: path.join('.', 'public')
+}))
 
 var port = process.env.PORT || 8080
 
@@ -16,26 +22,13 @@ router.get('/', function(req, res) {
     res.json({ "message": "No velociraptors." })
 })
 
-router.route('/xkcd')
-    .get(function(req, res) {
+router.get('/xkcd', function(req, res) {
         request(xkcd + '/info.0.json', function(err, resp, body) {
             if(err) {
                 res.json(resp.statusCode, { "message": err.message })
                 return
             }
             res.json(JSON.parse(body.replace(/\\n/g, ' ')))
-        })
-    })
-
-    .post(function(req, res) {
-        request(xkcd + '/info.0.json', function(err, resp, body) {
-            if(err) {
-                res.json(resp.statusCode, { "message": err.message })
-                return
-            }
-            var info = JSON.parse(body)
-            var json = { "num": info["num"] }
-            res.json(json)
         })
     })
 
@@ -49,8 +42,7 @@ router.get('/xkcd/:id', function(req, res) {
     })
 })
 
-router.route('/whatif')
-    .get(function(req, res) {
+router.get('/whatif', function(req, res) {
         request(whatif, function(err, resp, body) {
             if(err) {
                 res.json(resp.statusCode, { "message": err.message })
@@ -65,12 +57,14 @@ router.route('/whatif')
                 images = $('img.illustration'),
                 layout = [],
                 contemp = [],
-                imgtemp = []
+                imgtemp = [],
+                refs
 
             content.each(function(index, element) {
                 element = $(element)
                 if(element.attr('id') !== "question" &&
-                        element.attr('id') !=="attribute")
+                        element.attr('id') !=="attribute" &&
+                        !element.is('span.ref'))
                     contemp.push(element.text())
             })
             content = contemp
@@ -102,18 +96,6 @@ router.route('/whatif')
                     "layout": layout.join('|')
                 }
             ).replace(/\\n/g, ' ')))
-        })
-    })
-
-    .post(function(req, res) {
-        request(whatif, function(err, resp, body) {
-            if(err) {
-                res.json(resp.statusCode, { "message": err.message })
-                return
-            }
-            $ = cheerio.load(body)
-            var num = parseInt($('article.entry > a').attr('href').split('/')[3])
-            res.json({ "num": num })
         })
     })
 
@@ -181,17 +163,6 @@ router.get('/blog', function(req, res) {
         var article = String($('article.post').attr('id'))
         article = article.substring(article.indexOf('post-') + 'post-'.length)
         res.json({ "num": parseInt(article)})
-    })
-})
-
-router.get('/blog/:id/:paginate', function(req, res){
-    request(blog + '/' + req.params.id, function(err, resp, body) {
-        if(err) {
-            res.json(resp.statusCode, { "message": err.message() })
-            return
-        }
-        $ = cheerio.load(body)
-        var article = $('article.post')
     })
 })
 
