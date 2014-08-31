@@ -4,18 +4,12 @@ var express = require('express'),
     port = process.env.PORT || 8080,
     bodyParser = require('body-parser'),
     request = require('request'),
-    cheerio = require('cheerio'),
-    sass = require('node-sass')
-
+    cheerio = require('cheerio')
+    
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.set('view engine', 'jade')
 app.set('views', 'views')
-
-sass.renderFile({
-    file: 'style.scss',
-    outputStyle: 'compressed'
-})
 
 router.get('/', function(req, res) {
     res.render('index')
@@ -170,6 +164,7 @@ var xkcd = 'http://xkcd.com'
     blog = 'http://blog.xkcd.com'
 
 app.use('/api', router)
+app.use('/stylesheets', express.static('stylesheets'))
 
 app.listen(port)
 console.log('API is located on port ' + port)
