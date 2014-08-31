@@ -1,10 +1,14 @@
 {
 	"name": "xkcd-api",
+	"version": "0.0.1",
 	"main": "api.js",
-    "license": "MIT",
+    "license": {
+		"type": "MIT",
+		"url": "https://github.com/QuantumPhi/xkcdapi/blob/master/LICENSE"
+	},
     "repository": {
         "type": "git",
-        "url": "https://github.com/QuantumPhi/xkcd-API.git"
+        "url": "https://github.com/QuantumPhi/xkcdapi.git"
     },
 	"dependencies": {
 		"express": "4.x",

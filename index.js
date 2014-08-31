@@ -1,5 +1,7 @@
 var express = require('express'),
     app = express(),
+    router = express.Router(),
+    port = process.env.PORT || 8080,
     bodyParser = require('body-parser'),
     request = require('request'),
     cheerio = require('cheerio'),
@@ -9,17 +11,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.set('view engine', 'jade')
 app.set('views', 'views')
-app.use(sass.middleware({
-    src: "style",
-    dest: path.join('.', 'public')
-}))
 
-var port = process.env.PORT || 8080
-
-var router = express.Router()
+sass.renderFile({
+    file: 'style.scss',
+    outputStyle: 'compressed'
+})
 
 router.get('/', function(req, res) {
-    res.json({ "message": "No velociraptors." })
+    res.render('index')
 })
 
 router.get('/xkcd', function(req, res) {
