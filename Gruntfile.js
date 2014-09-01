@@ -53,6 +53,5 @@ module.exports = function(grunt) {
     })
 
     grunt.registerTask('default', ['uglify', 'buildcss'])
-    grunt.registerTask('heroku:production', ['uglify', 'buildcss'])
     grunt.registerTask('buildcss', ['sass', 'cssc', 'cssmin'])
 }
