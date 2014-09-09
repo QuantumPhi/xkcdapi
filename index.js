@@ -8,12 +8,6 @@ var express = require('express'),
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.set('view engine', 'jade')
-app.set('views', 'jade')
-
-router.get('/', function(req, res) {
-    res.render('index')
-})
 
 router.get('/xkcd', function(req, res) {
         request(xkcd + '/info.0.json', function(err, resp, body) {
