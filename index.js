@@ -10,14 +10,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 router.get('/xkcd', function(req, res) {
-        request(xkcd + '/info.0.json', function(err, resp, body) {
-            if(err) {
-                res.json(resp.statusCode, { "message": err.message })
-                return
-            }
-            res.json(JSON.parse(body.replace(/\\n/g, ' ')))
-        })
+    request(xkcd + '/info.0.json', function(err, resp, body) {
+        if(err) {
+            res.json(resp.statusCode, { "message": err.message })
+            return
+        }
+        res.json(JSON.parse(body.replace(/\\n/g, ' ')))
     })
+})
 
 router.get('/xkcd/:id', function(req, res) {
     request(xkcd + '/' + req.params.id + '/info.0.json', function(err, resp, body) {
@@ -46,7 +46,6 @@ router.get('/whatif', function(req, res) {
                 layout = [],
                 contemp = [],
                 imgtemp = [],
-                refs
 
             content.each(function(index, element) {
                 element = $(element)
@@ -59,7 +58,7 @@ router.get('/whatif', function(req, res) {
 
             images.each(function(index, element) {
                 imgtemp.push(whatif + $(element).attr('src'))
-                alt.push(whatif + images.attr('title'))
+                alt.push($(element).attr('title'))
             })
             images = imgtemp
 
@@ -102,6 +101,7 @@ router.get('/whatif/:id', function(req, res) {
             attribute = $('p#attribute'),
             content = $('article.entry > p'),
             images = $('img.illustration'),
+            alt = [],
             layout = [],
             contemp = [],
             imgtemp = []
@@ -116,6 +116,7 @@ router.get('/whatif/:id', function(req, res) {
 
         images.each(function(index, element) {
             imgtemp.push(whatif + $(element).attr('src'))
+            alt.push($(element).attr('title'))
         })
         images = imgtemp
 
@@ -137,6 +138,7 @@ router.get('/whatif/:id', function(req, res) {
                 "attribute": attribute,
                 "content": content.join('|'),
                 "img": images.join('|'),
+                "alt": alt.join('|'),
                 "layout": layout.join('|')
             }
         ).replace(/\\n/g, ' ')))
