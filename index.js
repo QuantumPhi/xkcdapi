@@ -42,6 +42,7 @@ router.get('/whatif', function(req, res) {
                 attribute = $('p#attribute'),
                 content = $('article.entry > p'),
                 images = $('img.illustration'),
+                alt = [],
                 layout = [],
                 contemp = [],
                 imgtemp = [],
@@ -58,6 +59,7 @@ router.get('/whatif', function(req, res) {
 
             images.each(function(index, element) {
                 imgtemp.push(whatif + $(element).attr('src'))
+                alt.push(whatif + images.attr('title'))
             })
             images = imgtemp
 
@@ -80,6 +82,7 @@ router.get('/whatif', function(req, res) {
                     "attribute": attribute,
                     "content": content.join('|'),
                     "img": images.join('|'),
+                    "alt": alt.join('|'),
                     "layout": layout.join('|')
                 }
             ).replace(/\\n/g, ' ')))
