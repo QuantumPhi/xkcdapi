@@ -9,14 +9,14 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(function(req, res, next) {
-    console.log('Time: %d', Date.now())
+    console.log('Time: %d -> %s', Date.now(), req.path)
     next()
 })
 
 var getText = function(element) {
     return element
         .clone()
-        .children()
+        .children('sup, span.ref')
         .remove()
         .end()
         .text()
@@ -53,7 +53,7 @@ router.get('/whatif/:id?', function(req, res) {
             element = $(element)
             if(element.attr('id') !== "question" &&
                     element.attr('id') !=="attribute")
-                temp.push(getText(element))
+                temp[index] += (getText(element))
         })
         content = temp.slice(0)
         temp = []
@@ -86,7 +86,7 @@ router.get('/whatif/:id?', function(req, res) {
                 "alt": alt.join('|'),
                 "layout": layout.join('|')
             }
-        ).replace(/\\n/g, ' ')))
+        ).replace(/\\n/g, ' ') //random undefined statements
     })
 })
 
