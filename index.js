@@ -22,18 +22,8 @@ var getText = function(element) {
         .text()
 }
 
-router.get('/xkcd', function(req, res) {
-    request(xkcd + '/info.0.json', function(err, resp, body) {
-        if(err) {
-            res.json(resp.statusCode, { "message": err.message })
-            return
-        }
-        res.json(JSON.parse(body.replace(/\\n/g, ' ')))
-    })
-})
-
-router.get('/xkcd/:id', function(req, res) {
-    request(xkcd + '/' + req.params.id + '/info.0.json', function(err, resp, body) {
+router.get('/xkcd/:id?', function(req, res) {
+    request(xkcd + (!req.params.id ? '' : '/' + req.params.id) + '/info.0.json', function(err, resp, body) {
         if(err) {
             res.json({ "message": err.message })
             return
@@ -42,8 +32,8 @@ router.get('/xkcd/:id', function(req, res) {
     })
 })
 
-router.get('/whatif/:id', function(req, res) {
-    request(whatif + '/' + req.params.id, function(err, resp, body) {
+router.get('/whatif/:id?', function(req, res) {
+    request(whatif + (!req.params.id ? '' : '/' + req.params.id), function(err, resp, body) {
         if(err) {
             res.json(resp.statusCode, { "message": err.message })
             return
@@ -56,19 +46,24 @@ router.get('/whatif/:id', function(req, res) {
             content = $('article.entry > p'),
             images = $('img.illustration'),
             alt = [],
-            layout = []
+            layout = [],
+            temp = []
 
         content.each(function(index, element) {
             element = $(element)
             if(element.attr('id') !== "question" &&
                     element.attr('id') !=="attribute")
-                content[index] = getText(element)
+                temp.push(getText(element))
         })
+        content = temp.slice(0)
+        temp = []
 
         images.each(function(index, element) {
-            images[index] = whatif + $(element).attr('src')
+            temp.push(whatif + $(element).attr('src'))
             alt.push($(element).attr('title'))
         })
+        images = temp.slice(0)
+        temp = []
 
         entry.children().each(function(index, element) {
             element = $(element)
@@ -78,8 +73,8 @@ router.get('/whatif/:id', function(req, res) {
                 layout.push('img')
         })
 
-        question = question.text()
-        attribute = attribute.text()
+        question = getText(question)
+        attribute = getText(attribute)
 
         res.json(JSON.parse(JSON.stringify(
             {
