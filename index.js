@@ -13,15 +13,6 @@ app.use(function(req, res, next) {
     next()
 })
 
-var getText = function(element) {
-    return element
-        .clone()
-        .children('sup, span.ref')
-        .remove()
-        .end()
-        .text()
-}
-
 router.get('/xkcd/:id?', function(req, res) {
     request(xkcd + (!req.params.id ? '' : '/' + req.params.id) + '/info.0.json', function(err, resp, body) {
         if(err) {
@@ -53,7 +44,7 @@ router.get('/whatif/:id?', function(req, res) {
             element = $(element)
             if(element.attr('id') !== "question" &&
                     element.attr('id') !=="attribute")
-                temp[index] += (getText(element))
+                temp[index] += element.text()
         })
         content = temp.slice(0)
         temp = []
@@ -73,8 +64,8 @@ router.get('/whatif/:id?', function(req, res) {
                 layout.push('img')
         })
 
-        question = getText(question)
-        attribute = getText(attribute)
+        question = question.text()
+        attribute = attribute.text()
 
         res.json(JSON.parse(JSON.stringify(
             {
@@ -86,7 +77,7 @@ router.get('/whatif/:id?', function(req, res) {
                 "alt": alt.join('|'),
                 "layout": layout.join('|')
             }
-        ).replace(/\\n/g, ' ') //random undefined statements
+        ).replace(/\\n/g, ' '))) //random undefined statements
     })
 })
 
